@@ -1,5 +1,5 @@
 function getComputerChoice() {
-    gameOptions = {0:"rock", 1:"paper", 2:"scissors"};
+    gameOptions = ["rock","paper","scissors"];
     computerSelection = Math.floor(Math.random() * 3);
     return gameOptions[computerSelection];
 }
@@ -31,21 +31,47 @@ function playRound(playerChoice, computerChoice){
         }
     }
 }
-
-function playGame(){
-    score = 0;
-    for (let i = 0; i < 5; i++){
-        playerSelection = prompt("Rock, paper or scissors: ").toLowerCase();
-        computerSelection = getComputerChoice();
-        console.log(`You played ${playerSelection} vs ${computerSelection}`);
-        score += playRound(playerSelection, computerSelection);
+const playerDiv = document.querySelector("#player-selection");
+let playerScore = [0,0]
+playerDiv.addEventListener("click", (event)=>{
+    const target = event.target;
+    const playerChoice = target.id;
+    console.log(playerChoice);
+    const computerChoice = getComputerChoice();
+    console.log(computerChoice)
+    result = playRound(playerChoice, computerChoice);
+    const para = document.createElement("p");
+    if (result == 1){
+        playerScore[0] += 1;
+    } else if(result == -1){
+        playerScore[1] += 1;
+    } else{
+        playerScore[0] += 1;
+        playerScore[1] += 1;
     }
-    if (score > 0){
-        return "You won!"
-    } else if (score < 0){
-        return "You lost!"
+    let endGame = false;
+    if (playerScore[0] === 5 && playerScore[1] === 5){
+        para.textContent = `${playerChoice} vs ${computerChoice}. It's a tie!`
+        para.style.color = 'blue';
+        para.style.fontWeight = 'bold';
+        playerScore = [0,0];
+        endGame = true;
+    } else if(playerScore[0] === 5){
+        para.textContent = `${playerChoice} vs ${computerChoice}. You won! Final score is ${playerScore[0]}:${playerScore[1]}`;
+        para.style.color = 'green';
+        para.style.fontWeight = 'bold';
+        playerScore = [0,0];
+        endGame = true;
+    } else if (playerScore[1] === 5){
+        para.textContent = `${computerChoice} vs ${playerChoice}. You lost! Final score is ${playerScore[0]}:${playerScore[1]}`;
+        para.style.color = 'red';
+        para.style.fontWeight = 'bold';
+        playerScore = [0,0];
+        endGame = true;
     } else {
-        return "It's a tie!"
+        para.textContent = `You played ${playerChoice} against ${computerChoice}. Your score is ${playerScore[0]}:${playerScore[1]}`
     }
-}
-console.log(playGame())
+    
+    playerDiv.appendChild(para);
+    
+})
